@@ -12,18 +12,25 @@
             text-align: center;
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Para evitar barras de rolagem com os confetes */
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin: 20px 10px;
             line-height: 1.2;
-            animation: glow 2s infinite alternate;
+            animation: enhancedGlow 1s infinite alternate;
         }
 
-        @keyframes glow {
-            0% { text-shadow: 0 0 10px #6200EA, 0 0 20px #BB86FC; }
-            100% { text-shadow: 0 0 20px #BB86FC, 0 0 40px #6200EA; }
+        @keyframes enhancedGlow {
+            0% {
+                color: #FFFFFF;
+                text-shadow: 0 0 20px #BB86FC, 0 0 40px #6200EA, 0 0 60px #FFFFFF;
+            }
+            100% {
+                color: #BB86FC;
+                text-shadow: 0 0 30px #FFFFFF, 0 0 50px #BB86FC, 0 0 70px #6200EA;
+            }
         }
 
         #gif {
@@ -69,6 +76,26 @@
             text-align: center;
             font-size: 1.2rem;
         }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #FFFFFF;
+            opacity: 0.7;
+            border-radius: 50%;
+            animation: confettiFall 2s linear infinite, confettiDrift 2s ease-in-out infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes confettiDrift {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(50px); }
+        }
     </style>
 </head>
 <body>
@@ -85,6 +112,7 @@
         const gif = document.getElementById('gif');
         const musica = document.getElementById('musica');
         const mensagensDiv = document.getElementById('mensagens');
+        const body = document.body;
 
         let frases = [
             "Você é incrível!",
@@ -102,6 +130,7 @@
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
+            estourarConfetes();
         });
 
         pauseBtn.addEventListener('click', () => {
@@ -128,6 +157,21 @@
                     clearInterval(fraseInterval);
                 }
             }, 3000);
+        }
+
+        function estourarConfetes() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                body.appendChild(confetti);
+
+                // Remover o confete após a animação
+                setTimeout(() => {
+                    confetti.remove();
+                }, 2000);
+            }
         }
     </script>
 </body>
