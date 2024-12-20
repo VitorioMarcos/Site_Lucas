@@ -15,14 +15,15 @@
         }
 
         h1 {
-            font-size: 3rem;
-            margin-top: 20px;
+            font-size: 3.5rem;
+            margin: 20px 10px;
+            line-height: 1.2;
             animation: glow 2s infinite alternate;
         }
 
         @keyframes glow {
-            0% { text-shadow: 0 0 10px #ffffff, 0 0 20px #ff3399; }
-            100% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff66cc; }
+            0% { text-shadow: 0 0 10px #6200EA, 0 0 20px #BB86FC; }
+            100% { text-shadow: 0 0 20px #BB86FC, 0 0 40px #6200EA; }
         }
 
         #gif {
@@ -71,14 +72,13 @@
     </style>
 </head>
 <body>
-    <h1>ESPERO QUE VOCÊ TENHA CURTIDO O SEU PRESENTE!</h1>
+    <h1>Espero que você<br>tenha curtido o seu presente!</h1>
     <img id="foto" src="foto_amigo.jpg" alt="Foto do amigo">
-    <p>Clique no botão abaixo para começar a celebração!</p>
+    <div id="mensagens"></div>
     <button id="start-btn">Começar</button>
     <button id="pause-btn" style="display: none;">Pause</button>
     <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
     <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
-    <div id="mensagens"></div>
     <script>
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.getElementById('pause-btn');
