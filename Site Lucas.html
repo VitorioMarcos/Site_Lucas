@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabéns!</title>
+    <style>
+        body {
+            background-color: #001a33;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-top: 20px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px #ffffff, 0 0 20px #ff3399; }
+            100% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff66cc; }
+        }
+
+        #gif {
+            display: none;
+            position: absolute;
+            width: 150px;
+            height: auto;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 5s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 20px); }
+        }
+
+        #foto {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #004080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parabéns, Amigo!</h1>
+    <img id="foto" src="foto_amigo.jpg" alt="Foto do amigo">
+    <p>Clique no botão abaixo para começar a celebração!</p>
+    <button id="start-btn">Começar</button>
+    <button id="pause-btn" disabled>Pausar</button>
+    <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
+    <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const gif = document.getElementById('gif');
+        const musica = document.getElementById('musica');
+        let frases = ["Hoje é seu dia!", "Que todos os seus sonhos se realizem!", "Muitas felicidades e conquistas!"];
+        let fraseIndex = 0;
+        let fraseInterval;
+
+        startBtn.addEventListener('click', () => {
+            gif.style.display = 'block';
+            musica.play();
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            fraseInterval = setInterval(() => {
+                if (fraseIndex < frases.length) {
+                    alert(frases[fraseIndex]);
+                    fraseIndex++;
+                } else {
+                    clearInterval(fraseInterval);
+                }
+            }, 5000);
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if (musica.paused) {
+                musica.play();
+                gif.style.display = 'block';
+                pauseBtn.textContent = "Pausar";
+                fraseInterval = setInterval(() => {}, 5000); // Reinicia mensagens
+            } else {
+                musica.pause();
+                gif.style.display = 'none';
+                pauseBtn.textContent = "Continuar";
+                clearInterval(fraseInterval);
+            }
+        });
+    </script>
+</body>
+</html>
