@@ -3,63 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parabéns!</title>
+    <title>Presente para Lucas</title>
     <style>
         body {
-            background-color: #001a33; /* Azul mais escuro */
+            background-color: #001a33;
             color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
         }
 
         h1 {
             font-size: 3rem;
-            text-align: center;
-            animation: pulse 2s infinite;
+            margin-top: 20px;
+            animation: glow 2s infinite alternate;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px #ffffff, 0 0 20px #ff3399; }
+            100% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff66cc; }
+        }
+
+        #gif {
+            display: none;
+            position: absolute;
+            width: 150px;
+            height: auto;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 5s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 20px); }
+        }
+
+        #foto {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px 0;
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            background-color: #0074D9;
+            background-color: #004080;
             color: white;
             border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+            margin: 10px;
         }
 
         button:hover {
             background-color: #00509E;
-        }
-
-        #gif {
-            position: absolute;
-            width: 100px;
-            display: none;
-        }
-
-        #foto {
-            margin-top: 20px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
         }
 
         #mensagens {
@@ -67,102 +68,66 @@
             text-align: center;
             font-size: 1.2rem;
         }
-
-        #pause-play {
-            margin-top: 30px;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            background-color: #0074D9;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: none; /* Inicialmente invisível */
-        }
-
-        #pause-play:hover {
-            background-color: #00509E;
-        }
     </style>
 </head>
 <body>
     <h1>ESPERO QUE VOCÊ TENHA CURTIDO O SEU PRESENTE!</h1>
-    <button id="start-button" onclick="startCelebration()">Clique aqui para comemorar!</button>
-    <img id="gif" src="Luffy Lucas.gif" alt="Celebration GIF">
-    <img id="foto" src="foto_amigo.jpg" alt="Foto do Amigo">
+    <img id="foto" src="foto_amigo.jpg" alt="Foto do amigo">
+    <p>Clique no botão abaixo para começar a celebração!</p>
+    <button id="start-btn">Começar</button>
+    <button id="pause-btn" style="display: none;">Pause</button>
+    <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
+    <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
     <div id="mensagens"></div>
-
-    <audio id="musica" src="Stay With Me - Miki Matsubara - Japonese Music.mp3" preload="auto"></audio>
-
-    <button id="pause-play" onclick="togglePausePlay()">Pause</button>
-
     <script>
-        const mensagens = [
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const gif = document.getElementById('gif');
+        const musica = document.getElementById('musica');
+        const mensagensDiv = document.getElementById('mensagens');
+
+        let frases = [
             "Você é incrível!",
             "Mais um ano de conquistas!",
             "Desejamos tudo de bom!",
             "Parabéns pelo seu dia!"
         ];
-
-        let mensagemIndex = 0;
+        let fraseIndex = 0;
+        let fraseInterval = null;
         let isPaused = false;
-        let interval = null;
-        let gifAnimation = null;
 
-        function startCelebration() {
-            const gif = document.getElementById('gif');
-            const musica = document.getElementById('musica');
-            const mensagensDiv = document.getElementById('mensagens');
-            const pausePlayButton = document.getElementById('pause-play');
-
+        startBtn.addEventListener('click', () => {
             gif.style.display = 'block';
             musica.play();
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+            exibirMensagens();
+        });
 
-            interval = setInterval(() => {
-                if (mensagemIndex < mensagens.length) {
-                    mensagensDiv.innerHTML += `<p>${mensagens[mensagemIndex]}</p>`;
-                    mensagemIndex++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 3000); // 3 segundos entre mensagens
-
-            animateGif(gif);
-            pausePlayButton.style.display = 'inline-block'; // Torna o botão visível
-        }
-
-        function animateGif(gif) {
-            let x = 0, y = 0;
-            let directionX = 1, directionY = 1;
-
-            gifAnimation = setInterval(() => {
-                if (x + gif.offsetWidth >= window.innerWidth || x <= 0) directionX *= -1;
-                if (y + gif.offsetHeight >= window.innerHeight || y <= 0) directionY *= -1;
-
-                x += 5 * directionX;
-                y += 5 * directionY;
-
-                gif.style.transform = `translate(${x}px, ${y}px)`;
-            }, 30);
-        }
-
-        function togglePausePlay() {
-            const musica = document.getElementById('musica');
-            const gif = document.getElementById('gif');
-            const button = document.getElementById('pause-play');
-
-            if (!isPaused) {
-                musica.pause();
-                clearInterval(interval);
-                clearInterval(gifAnimation);
-                button.textContent = "Play";
-            } else {
+        pauseBtn.addEventListener('click', () => {
+            if (isPaused) {
                 musica.play();
-                startCelebration();
-                button.textContent = "Pause";
+                exibirMensagens();
+                pauseBtn.textContent = "Pause";
+            } else {
+                musica.pause();
+                clearInterval(fraseInterval);
+                pauseBtn.textContent = "Play";
             }
-
             isPaused = !isPaused;
+        });
+
+        function exibirMensagens() {
+            fraseInterval = setInterval(() => {
+                if (fraseIndex < frases.length) {
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = frases[fraseIndex];
+                    mensagensDiv.appendChild(novaMensagem);
+                    fraseIndex++;
+                } else {
+                    clearInterval(fraseInterval);
+                }
+            }, 3000);
         }
     </script>
 </body>
