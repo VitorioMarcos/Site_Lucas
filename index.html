@@ -230,53 +230,43 @@
 
         function moverAleatoriamente() {
             setInterval(() => {
+                // Calcula posições aleatórias dentro dos limites da tela
                 const randomX = Math.random() * 100; // posição X aleatória
                 const randomY = Math.random() * 100; // posição Y aleatória
 
-                // Atualiza a posição do GIF
+                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
+
+                // Aplica a transição suave
+                gif.style.transition = `all ${duration}s ease-in-out`;
                 gif.style.left = `${randomX}%`;
                 gif.style.top = `${randomY}%`;
-            }, 1000); // Mover a cada 1 segundo
+
+                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
+                if (Math.random() < 0.5) {
+                    gif.style.transform = 'scaleX(-1)';
+                } else {
+                    gif.style.transform = 'scaleX(1)';
+                }
+            }, 2000); // Faz o GIF mover a cada 2 segundos
         }
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
-                if (fraseIndex < frases.length) {
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = frases[fraseIndex];
-                    mensagensDiv.appendChild(novaMensagem);
-                    fraseIndex++;
-                } else {
-                    clearInterval(fraseInterval);
-                }
-            }, 3000);
+                mensagensDiv.innerHTML = frases[fraseIndex];
+                fraseIndex = (fraseIndex + 1) % frases.length;
+            }, 4000); // Exibe a mensagem a cada 4 segundos
         }
 
         function explodirConfetes() {
-            const numConfetes = 400;
-            const duracao = 4000;
-
-            for (let i = 0; i < numConfetes; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-
-                const isLeft = Math.random() < 0.5;
-                confetti.style.left = isLeft ? '0%' : '100%';
-                confetti.style.top = '0%';
-
-                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
-                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-
-                body.appendChild(confetti);
-
-                setTimeout(() => {
-                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
-                }, 0);
-
-                setTimeout(() => {
-                    confetti.remove();
-                }, duracao);
+            for (let i = 0; i < 100; i++) {
+                const confete = document.createElement('div');
+                confete.classList.add('confetti');
+                confete.style.left = `${Math.random() * 100}%`;
+                confete.style.top = `${Math.random() * 100}%`;
+                confete.style.animation = `confettiExplode ${Math.random() * 3 + 2}s forwards`;
+                body.appendChild(confete);
+                setTimeout(() => confete.remove(), 3000); // Remove o confete após a animação
             }
         }
     </script>
