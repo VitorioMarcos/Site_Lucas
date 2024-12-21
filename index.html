@@ -152,8 +152,8 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifDisplayed = false; // Controla se o gif já foi exibido após 58 segundos
-        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
+        let gifDisplayed = false;
+        let gifTimers = [];
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -163,19 +163,18 @@
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
-            gifDisplayed = false; // Reseta o controle do gif
+            gifDisplayed = false;
 
             setTimeout(() => {
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
-                    gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
                     gif.style.top = '50%';
-                    gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
+                    gif.style.transform = 'translateY(-50%)';
                     gifDisplayed = true;
                     moverGif();
                 }
-            }, 58000); // Alteração para 58 segundos
+            }, 58000);
         });
 
         pauseBtn.addEventListener('click', () => {
@@ -183,13 +182,14 @@
                 musica.play();
                 gif.style.display = 'block';
                 gifExtras.forEach(g => g.style.display = 'block');
-                moverAleatoriamente(); // Resume o movimento dos GIFs
+                iniciarMovimentoAleatorio();
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
-                clearInterval(fraseInterval);
                 gif.style.display = 'none';
                 gifExtras.forEach(g => g.style.display = 'none');
+                gifTimers.forEach(timer => clearInterval(timer));
+                gifTimers = [];
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
@@ -198,7 +198,6 @@
         musica.addEventListener('timeupdate', () => {
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
-                gifPosition = 'left';
                 gif.style.left = '10%';
                 gif.style.top = '50%';
                 gif.style.transform = 'translateY(-50%)';
@@ -207,45 +206,37 @@
             }
 
             if (musica.currentTime >= 142 && gifExtras[0].style.display === 'none') {
-                gifExtras.forEach(g => {
-                    g.style.display = 'block';
-                    moverAleatoriamente();
-                });
+                gifExtras.forEach(g => g.style.display = 'block');
+                iniciarMovimentoAleatorio();
             }
         });
 
         function moverGif() {
             setTimeout(() => {
-                if (musica.paused) return; // Respeita a pausa da música
+                if (musica.paused) return;
                 gif.style.left = '80%';
                 gif.style.transform = 'translateY(-50%) scaleX(-1)';
-                gifPosition = 'right';
-
                 setTimeout(() => {
                     if (musica.paused) return;
                     gif.style.left = '50%';
                     gif.style.top = '10%';
                     gif.style.transform = 'translateX(-50%)';
-                    gifPosition = 'top';
-
                     setTimeout(() => {
                         if (musica.paused) return;
                         gif.style.top = '80%';
-                        gifPosition = 'bottom';
-
                         setTimeout(() => {
                             if (musica.paused) return;
-                            moverAleatoriamente();
+                            iniciarMovimentoAleatorio();
                         }, 600);
                     }, 600);
                 }, 600);
             }, 600);
         }
 
-        function moverAleatoriamente() {
+        function iniciarMovimentoAleatorio() {
             const gifs = [gif, ...gifExtras];
             gifs.forEach(g => {
-                setInterval(() => {
+                const timer = setInterval(() => {
                     const randomX = Math.random() * 80 + 10;
                     const randomY = Math.random() * 80 + 10;
                     const duration = Math.random() * 2 + 1;
@@ -254,6 +245,7 @@
                     g.style.top = `${randomY}%`;
                     g.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
                 }, 2000);
+                gifTimers.push(timer);
             });
         }
 
