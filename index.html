@@ -12,7 +12,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            overflow-y: auto; /* Permite rolar a página */
+            overflow-y: auto;
         }
 
         h1 {
@@ -38,18 +38,16 @@
             position: absolute;
             width: 150px;
             height: auto;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
             animation: float 5s infinite;
         }
 
         @keyframes float {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, 20px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(20px); }
         }
 
         #foto {
+            display: none;
             width: 300px;
             height: 300px;
             border-radius: 20px;
@@ -126,6 +124,7 @@
         const pauseBtn = document.getElementById('pause-btn');
         const gif = document.getElementById('gif');
         const musica = document.getElementById('musica');
+        const foto = document.getElementById('foto');
         const mensagensDiv = document.getElementById('mensagens');
         const body = document.body;
 
@@ -138,24 +137,38 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
+        let gifPosition = { top: 0, left: 0, width: 150 }; // Salvar posição e tamanho do GIF
 
         startBtn.addEventListener('click', () => {
-            gif.style.display = 'block';
+            musica.currentTime = 0;
             musica.play();
+            foto.style.display = 'block';
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
+
+            setTimeout(() => {
+                gif.style.display = 'block';
+                gif.style.left = `${foto.offsetLeft - gif.offsetWidth - 20}px`;
+                gif.style.top = `${foto.offsetTop}px`;
+            }, 59000); // Mostrar GIF após 59 segundos
         });
 
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
                 exibirMensagens();
+                gif.style.display = 'block';
+                gif.style.left = `${gifPosition.left}px`;
+                gif.style.top = `${gifPosition.top}px`;
+                gif.style.width = `${gifPosition.width}px`;
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
                 clearInterval(fraseInterval);
+                gifPosition = { top: gif.offsetTop, left: gif.offsetLeft, width: gif.offsetWidth }; // Salvar posição
+                gif.style.display = 'none';
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
