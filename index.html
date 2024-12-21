@@ -55,8 +55,8 @@
             background-color: #004080;
             color: white;
             border: none;
-            padding: 20px 40px; /* Aumentado o tamanho do botão */
-            font-size: 1.5rem; /* Aumentado o tamanho do texto */
+            padding: 10px 20px;
+            font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
             margin: 10px;
@@ -64,6 +64,15 @@
 
         button:hover {
             background-color: #00509E;
+        }
+
+        #start-btn {
+            font-size: 2rem; /* Tamanho aumentado */
+            padding: 20px 40px; /* Botão maior */
+        }
+
+        #pause-btn {
+            font-size: 1rem; /* Botão de pause com o tamanho original */
         }
 
         #mensagens {
@@ -103,8 +112,8 @@
             }
 
             button {
-                padding: 16px 32px;
-                font-size: 1.2rem;
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -135,8 +144,8 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifDisplayed = false;
-        let gifPosition = 'left';
+        let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
+        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -146,95 +155,106 @@
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
-            gifDisplayed = false;
+            gifDisplayed = false; // Reseta o controle do gif
 
             setTimeout(() => {
+                // Após 58 segundos, o gif pode ser exibido
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
-                    gifPosition = 'left';
+                    gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
                     gif.style.top = '50%';
-                    gif.style.transform = 'translateY(-50%)';
+                    gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                     gifDisplayed = true;
                     moverGif();
                 }
-            }, 58000);
+            }, 58000); // Alteração para 58 segundos
         });
 
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
+                // Só exibe o gif se a música já passou de 58 segundos
                 if (musica.currentTime >= 58) {
                     gif.style.display = 'block';
-                    moverGif();
+                    moverGif(); // Resume o movimento do GIF
                 }
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
                 clearInterval(fraseInterval);
-                gif.style.display = 'none';
+                gif.style.display = 'none'; // Esconde o gif quando a música é pausada
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
         });
 
         musica.addEventListener('timeupdate', () => {
+            // Só exibe o gif depois que a música alcançar 58 segundos
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
-                gifPosition = 'left';
+                gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
                 gif.style.top = '50%';
-                gif.style.transform = 'translateY(-50%)';
+                gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                 gifDisplayed = true;
                 moverGif();
             } else if (musica.paused) {
-                gif.style.display = 'none';
+                gif.style.display = 'none'; // Esconde o gif quando a música for pausada
             }
         });
 
         function moverGif() {
             setTimeout(() => {
-                if (musica.paused) return;
-                gif.style.left = '5%'; // Aumentado para se mover mais para a esquerda
-                gif.style.transform = 'translateY(-50%) scaleX(-1)';
+                if (musica.paused) return; // Respeita a pausa da música
+                // Move o GIF para o lado direito após 600ms
+                gif.style.left = '80%'; // Agora mais próximo da foto
+                gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
                 gifPosition = 'right';
 
+                // Após 600ms, sobe o GIF
                 setTimeout(() => {
                     if (musica.paused) return;
-                    gif.style.left = '50%';
-                    gif.style.top = '10%'; // Aumentado para subir mais
-                    gif.style.transform = 'translateX(-50%)';
+                    gif.style.left = '50%'; // Centraliza horizontalmente
+                    gif.style.top = '10%'; // Sobe o GIF
+                    gif.style.transform = 'translateX(-50%)'; // Centraliza horizontalmente
                     gifPosition = 'top';
 
+                    // Após 600ms, desce o GIF
                     setTimeout(() => {
                         if (musica.paused) return;
-                        gif.style.top = '80%';
+                        gif.style.top = '80%'; // Desce o GIF
                         gifPosition = 'bottom';
-                    }, 600);
-                }, 600);
-            }, 600);
+                    }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
+                }, 600); // Tempo de 600ms para o GIF mover para a direita
+            }, 600); // Tempo de 600ms para o GIF mover para a direita
 
+            // Inicia o movimento aleatório após o GIF atingir a 4ª posição (embaixo)
             setTimeout(() => {
                 if (gifPosition === 'bottom') {
                     moverAleatoriamente();
                 }
-            }, 2400);
+            }, 2400); // Após o gif descer, ele começa a se mover aleatoriamente
         }
 
         function moverAleatoriamente() {
-            setInterval(() => {
-                const randomX = Math.random() * 80 + 5; // Ajustado para maior movimento à esquerda
-                const randomY = Math.random() * 80 + 5;
+    setInterval(() => {
+        // Calcula posições aleatórias dentro dos limites da tela
+        const randomX = Math.random() * 80 + 10; // Evita que o GIF saia das bordas
+        const randomY = Math.random() * 80 + 10;
 
-                const duration = Math.random() * 2 + 1;
+        // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+        const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
 
-                gif.style.transition = `all ${duration}s ease-in-out`;
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
+        // Aplica a transição suave
+        gif.style.transition = `all ${duration}s ease-in-out`;
+        gif.style.left = `${randomX}%`;
+        gif.style.top = `${randomY}%`;
 
-                gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-            }, 2000);
-        }
+        // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
+        gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+    }, 2000); // Faz o GIF mover a cada 2 segundos
+}
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
