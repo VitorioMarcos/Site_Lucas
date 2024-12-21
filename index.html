@@ -36,7 +36,7 @@
         #gif {
             display: none;
             position: absolute;
-            width: 150px;
+            width: 225px; /* Aumentado em 50% */
             height: auto;
             top: 50%;
             left: 10%;
@@ -51,8 +51,8 @@
 
         #foto {
             display: none;
-            width: 300px;
-            height: 300px;
+            width: 450px; /* Aumentado em 50% */
+            height: 450px; /* Aumentado em 50% */
             border-radius: 20px;
             margin: 20px auto; /* Centraliza horizontalmente */
         }
@@ -93,6 +93,7 @@
             }
             100% {
                 transform: translate(calc(var(--dx) * 500px), calc(var(--dy) * 500px)) scale(0.5);
+                opacity: 0;
             }
         }
 
@@ -103,8 +104,8 @@
             }
 
             #foto {
-                width: 200px;
-                height: 200px;
+                width: 300px;
+                height: 300px;
             }
 
             button {
@@ -140,7 +141,7 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifPosition = { top: 0, left: 0, width: 150 };
+        let gifPosition = { top: 0, left: 0, width: 225 }; // Salvar posição e tamanho do GIF
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -192,24 +193,31 @@
         }
 
         function explodirConfetes() {
-            const numConfetes = 200;
+            const numConfetes = 400; // Dobramos a quantidade
+            const lados = ['esquerdo', 'direito'];
+            const duracao = 2000; // Aumentado o tempo de permanência
+
             for (let i = 0; i < numConfetes; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
-                confetti.style.left = `${startBtn.offsetLeft + startBtn.offsetWidth / 2}px`;
+
+                const lado = lados[Math.floor(Math.random() * lados.length)];
+                confetti.style.left = lado === 'esquerdo' ? `${startBtn.offsetLeft}px` : `${startBtn.offsetLeft + startBtn.offsetWidth}px`;
                 confetti.style.top = `${startBtn.offsetTop}px`;
+
                 confetti.style.setProperty('--dx', `${Math.random() * 2 - 1}`);
                 confetti.style.setProperty('--dy', `${Math.random() * 2 - 1}`);
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
                 body.appendChild(confetti);
 
                 setTimeout(() => {
-                    confetti.style.animation = `confettiExplode 1s ease-out forwards`;
+                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
                 }, 0);
 
                 setTimeout(() => {
                     confetti.remove();
-                }, 1000);
+                }, duracao);
             }
         }
     </script>
