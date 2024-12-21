@@ -54,7 +54,7 @@
             width: 300px;
             height: 300px;
             border-radius: 20px;
-            margin: 20px 0;
+            margin: 20px auto; /* Centraliza horizontalmente */
         }
 
         button {
@@ -140,7 +140,7 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifPosition = { top: 0, left: 0, width: 150 }; // Salvar posição e tamanho do GIF
+        let gifPosition = { top: 0, left: 0, width: 150 };
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
