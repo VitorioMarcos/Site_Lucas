@@ -41,12 +41,6 @@
             top: 50%;
             left: 10%;
             transform: translateY(-50%);
-            animation: float 5s infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(20px); }
         }
 
         #foto {
@@ -160,6 +154,7 @@
                     gif.style.display = 'block';
                     gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
+                    gif.style.top = '50%';
                     gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                     gifDisplayed = true;
                     moverGif();
@@ -191,6 +186,7 @@
                 gif.style.display = 'block';
                 gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
+                gif.style.top = '50%';
                 gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                 gifDisplayed = true;
                 moverGif();
@@ -203,7 +199,6 @@
             setTimeout(() => {
                 if (musica.paused) return; // Respeita a pausa da música
                 // Move o GIF para o lado direito após 600ms
-                gif.style.transition = 'left 1s ease-in-out, transform 1s ease-in-out';
                 gif.style.left = '90%'; // Move para a direita
                 gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
                 gifPosition = 'right';
@@ -211,19 +206,17 @@
                 // Após 1s, sobe o GIF
                 setTimeout(() => {
                     if (musica.paused) return;
-                    gif.style.transition = 'top 1s ease-in-out';
                     gif.style.top = '10%'; // Sobe o GIF
                     gifPosition = 'top';
 
-                    // Após 1s, desce o GIF
+                    // Após 600ms, desce o GIF
                     setTimeout(() => {
                         if (musica.paused) return;
-                        gif.style.transition = 'top 0.5s ease-in-out';
                         gif.style.top = '80%'; // Desce o GIF
                         gifPosition = 'bottom';
-                    }, 1000);
+                    }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
                 }, 1000);
-            }, 600);
+            }, 600); // Tempo de 600ms para o GIF mover para a direita
         }
 
         function exibirMensagens() {
