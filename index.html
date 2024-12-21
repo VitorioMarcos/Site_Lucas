@@ -46,7 +46,7 @@
         .gif-extra {
             display: none;
             position: absolute;
-            width: 200px;
+            width: 300px;
             height: auto;
         }
 
@@ -123,26 +123,25 @@
     <button id="start-btn">Começar</button>
     <button id="pause-btn" style="display: none;">Pause</button>
     <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
-    <img class="gif-extra" id="gif-extra1" src="extra1.gif" alt="Extra GIF 1">
-    <img class="gif-extra" id="gif-extra2" src="extra2.gif" alt="Extra GIF 2">
-    <img class="gif-extra" id="gif-extra3" src="extra3.gif" alt="Extra GIF 3">
-    <img class="gif-extra" id="gif-extra4" src="extra4.gif" alt="Extra GIF 4">
+    <img class="gif-extra" id="gif-extra-1" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 1">
+    <img class="gif-extra" id="gif-extra-2" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 2">
+    <img class="gif-extra" id="gif-extra-3" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 3">
+    <img class="gif-extra" id="gif-extra-4" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 4">
     <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
     <script>
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.getElementById('pause-btn');
         const gif = document.getElementById('gif');
+        const gifExtras = [
+            document.getElementById('gif-extra-1'),
+            document.getElementById('gif-extra-2'),
+            document.getElementById('gif-extra-3'),
+            document.getElementById('gif-extra-4'),
+        ];
         const musica = document.getElementById('musica');
         const foto = document.getElementById('foto');
         const mensagensDiv = document.getElementById('mensagens');
         const body = document.body;
-
-        const gifsExtras = [
-            document.getElementById('gif-extra1'),
-            document.getElementById('gif-extra2'),
-            document.getElementById('gif-extra3'),
-            document.getElementById('gif-extra4')
-        ];
 
         let frases = [
             "Você é incrível!",
@@ -153,9 +152,9 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
-        let extraGifsDisplayed = false; // Controla se os gifs extras já foram exibidos
+        let gifDisplayed = false; // Controla se o gif já foi exibido após 58 segundos
         let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
+        let gifMovementInterval = null;
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -166,15 +165,14 @@
             exibirMensagens();
             explodirConfetes();
             gifDisplayed = false; // Reseta o controle do gif
-            extraGifsDisplayed = false; // Reseta o controle dos gifs extras
 
             setTimeout(() => {
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
-                    gifPosition = 'left';
+                    gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
                     gif.style.top = '50%';
-                    gif.style.transform = 'translateY(-50%)';
+                    gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                     gifDisplayed = true;
                     moverGif();
                 }
@@ -184,19 +182,16 @@
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
-                if (musica.currentTime >= 58 && !gifDisplayed) {
-                    gif.style.display = 'block';
-                    moverGif();
-                }
-                if (musica.currentTime >= 142 && !extraGifsDisplayed) {
-                    mostrarGifsExtras();
-                }
+                gif.style.display = 'block';
+                gifExtras.forEach(g => g.style.display = 'block');
+                moverAleatoriamente(); // Resume o movimento dos GIFs
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
                 clearInterval(fraseInterval);
                 gif.style.display = 'none';
-                gifsExtras.forEach(gifExtra => gifExtra.style.display = 'none');
+                gifExtras.forEach(g => g.style.display = 'none');
+                clearInterval(gifMovementInterval); // Interrompe o movimento dos GIFs
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
@@ -212,18 +207,18 @@
                 gifDisplayed = true;
                 moverGif();
             }
-            if (musica.currentTime >= 142 && !extraGifsDisplayed && !musica.paused) {
-                mostrarGifsExtras();
-            }
-            if (musica.paused) {
-                gif.style.display = 'none';
-                gifsExtras.forEach(gifExtra => gifExtra.style.display = 'none');
+
+            if (musica.currentTime >= 142 && gifExtras[0].style.display === 'none') {
+                gifExtras.forEach(g => {
+                    g.style.display = 'block';
+                    moverAleatoriamente();
+                });
             }
         });
 
         function moverGif() {
             setTimeout(() => {
-                if (musica.paused) return;
+                if (musica.paused) return; // Respeita a pausa da música
                 gif.style.left = '80%';
                 gif.style.transform = 'translateY(-50%) scaleX(-1)';
                 gifPosition = 'right';
@@ -239,47 +234,30 @@
                         if (musica.paused) return;
                         gif.style.top = '80%';
                         gifPosition = 'bottom';
+
+                        setTimeout(() => {
+                            if (musica.paused) return;
+                            moverAleatoriamente();
+                        }, 600);
                     }, 600);
                 }, 600);
             }, 600);
-
-            setTimeout(() => {
-                if (gifPosition === 'bottom') {
-                    moverAleatoriamente();
-                }
-            }, 2400);
         }
 
         function moverAleatoriamente() {
-            setInterval(() => {
-                const randomX = Math.random() * 80 + 10;
-                const randomY = Math.random() * 80 + 10;
-                const duration = Math.random() * 2 + 1;
-                gif.style.transition = `${duration}s ease-in-out`;
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
-                gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-            }, 2000);
-        }
-
-        function mostrarGifsExtras() {
-            gifsExtras.forEach(gifExtra => {
-                gifExtra.style.display = 'block';
-                moverAleatoriamenteExtra(gifExtra);
+            const gifs = [gif, ...gifExtras];
+            gifs.forEach(g => {
+                clearInterval(gifMovementInterval); // Interrompe o movimento anterior
+                gifMovementInterval = setInterval(() => {
+                    const randomX = Math.random() * 80 + 10;
+                    const randomY = Math.random() * 80 + 10;
+                    const duration = Math.random() * 2 + 1;
+                    g.style.transition = `all ${duration}s ease-in-out`;
+                    g.style.left = `${randomX}%`;
+                    g.style.top = `${randomY}%`;
+                    g.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+                }, 2000);
             });
-            extraGifsDisplayed = true;
-        }
-
-        function moverAleatoriamenteExtra(gifExtra) {
-            setInterval(() => {
-                const randomX = Math.random() * 80 + 10;
-                const randomY = Math.random() * 80 + 10;
-                const duration = Math.random() * 2 + 1;
-                gifExtra.style.transition = `${duration}s ease-in-out`;
-                gifExtra.style.left = `${randomX}%`;
-                gifExtra.style.top = `${randomY}%`;
-                gifExtra.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-            }, 2000);
         }
 
         function exibirMensagens() {
