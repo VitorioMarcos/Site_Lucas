@@ -41,6 +41,7 @@
             top: 50%;
             left: 10%;
             transform: translateY(-50%);
+            transition: all 600ms ease-out; /* Adicionando uma transição suave de 600ms */
         }
 
         #foto {
@@ -203,9 +204,10 @@
                 gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
                 gifPosition = 'right';
 
-                // Após 1s, sobe o GIF
+                // Após 600ms, sobe o GIF para o centro horizontal
                 setTimeout(() => {
                     if (musica.paused) return;
+                    gif.style.left = '50%'; // Centraliza horizontalmente
                     gif.style.top = '10%'; // Sobe o GIF
                     gifPosition = 'top';
 
@@ -215,7 +217,7 @@
                         gif.style.top = '80%'; // Desce o GIF
                         gifPosition = 'bottom';
                     }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
-                }, 1000);
+                }, 600); // Tempo de 600ms para o GIF mover para a direita
             }, 600); // Tempo de 600ms para o GIF mover para a direita
         }
 
