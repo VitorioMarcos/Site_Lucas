@@ -43,13 +43,6 @@
             transform: translateY(-50%);
         }
 
-        .gif-extra {
-            display: none;
-            position: absolute;
-            width: 300px;
-            height: auto;
-        }
-
         #foto {
             display: none;
             width: 500px;
@@ -123,21 +116,11 @@
     <button id="start-btn">Começar</button>
     <button id="pause-btn" style="display: none;">Pause</button>
     <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
-    <img class="gif-extra" id="gif-extra-1" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 1">
-    <img class="gif-extra" id="gif-extra-2" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 2">
-    <img class="gif-extra" id="gif-extra-3" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 3">
-    <img class="gif-extra" id="gif-extra-4" src="Luffy_Lucas.gif" alt="Celebration GIF Extra 4">
     <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
     <script>
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.getElementById('pause-btn');
         const gif = document.getElementById('gif');
-        const gifExtras = [
-            document.getElementById('gif-extra-1'),
-            document.getElementById('gif-extra-2'),
-            document.getElementById('gif-extra-3'),
-            document.getElementById('gif-extra-4'),
-        ];
         const musica = document.getElementById('musica');
         const foto = document.getElementById('foto');
         const mensagensDiv = document.getElementById('mensagens');
@@ -152,9 +135,10 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifDisplayed = false; // Controla se o gif já foi exibido após 58 segundos
-        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
-        let showExtraGifs = false; // Controla se os gifs extras já devem ser exibidos
+        let gifDisplayed = false;
+        let gifPosition = 'left';
+        let showGifAfterTime = false; // Controla a exibição do primeiro gif após o tempo 00:58
+        let extraGifsDisplayed = false; // Controla a exibição dos gifs extras após o tempo 2:22
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -164,18 +148,11 @@
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
-            gifDisplayed = false; // Reseta o controle do gif
-            showExtraGifs = false; // Reseta o controle dos gifs extras
+            gifDisplayed = false;
 
             setTimeout(() => {
                 if (musica.paused === false && musica.currentTime >= 58) {
-                    gif.style.display = 'block';
-                    gifPosition = 'left'; // Inicialmente no lado esquerdo
-                    gif.style.left = '10%';
-                    gif.style.top = '50%';
-                    gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
-                    gifDisplayed = true;
-                    moverGif();
+                    showGifAfterTime = true;
                 }
             }, 58000); // Alteração para 58 segundos
         });
@@ -183,25 +160,23 @@
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
-                if (musica.currentTime >= 142) {
-                    gifExtras.forEach(g => g.style.display = 'block');
-                } else if (gifDisplayed) {
+                if (musica.currentTime >= 58 && !gifDisplayed) {
                     gif.style.display = 'block';
+                    moverGif();
+                    gifDisplayed = true;
                 }
-                moverAleatoriamente(); // Resume o movimento dos GIFs
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
                 clearInterval(fraseInterval);
                 gif.style.display = 'none';
-                gifExtras.forEach(g => g.style.display = 'none');
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
         });
 
         musica.addEventListener('timeupdate', () => {
-            if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
+            if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused && showGifAfterTime) {
                 gif.style.display = 'block';
                 gifPosition = 'left';
                 gif.style.left = '10%';
@@ -211,18 +186,19 @@
                 moverGif();
             }
 
-            if (musica.currentTime >= 142 && !showExtraGifs) {
-                gifExtras.forEach(g => {
-                    g.style.display = 'block';
-                    moverAleatoriamente();
-                });
-                showExtraGifs = true;
+            if (musica.currentTime >= 142 && !extraGifsDisplayed && !musica.paused) {
+                extraGifsDisplayed = true;
+                exibirGifsExtras();
+            }
+
+            if (musica.currentTime >= 142 && isPaused) {
+                gif.style.display = 'none';
             }
         });
 
         function moverGif() {
             setTimeout(() => {
-                if (musica.paused) return; // Respeita a pausa da música
+                if (musica.paused) return;
                 gif.style.left = '80%';
                 gif.style.transform = 'translateY(-50%) scaleX(-1)';
                 gifPosition = 'right';
@@ -238,29 +214,27 @@
                         if (musica.paused) return;
                         gif.style.top = '80%';
                         gifPosition = 'bottom';
-
-                        setTimeout(() => {
-                            if (musica.paused) return;
-                            moverAleatoriamente();
-                        }, 600);
                     }, 600);
                 }, 600);
             }, 600);
+
+            setTimeout(() => {
+                if (gifPosition === 'bottom') {
+                    moverAleatoriamente();
+                }
+            }, 2400);
         }
 
         function moverAleatoriamente() {
-            const gifs = [gif, ...gifExtras];
-            gifs.forEach(g => {
-                setInterval(() => {
-                    const randomX = Math.random() * 80 + 10;
-                    const randomY = Math.random() * 80 + 10;
-                    const duration = Math.random() * 2 + 1;
-                    g.style.transition = `all ${duration}s ease-in-out`;
-                    g.style.left = `${randomX}%`;
-                    g.style.top = `${randomY}%`;
-                    g.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-                }, 2000);
-            });
+            setInterval(() => {
+                const randomX = Math.random() * 80 + 10;
+                const randomY = Math.random() * 80 + 10;
+                const duration = Math.random() * 2 + 1;
+                gif.style.transition = `all ${duration}s ease-in-out`;
+                gif.style.left = `${randomX}%`;
+                gif.style.top = `${randomY}%`;
+                gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+            }, 2000);
         }
 
         function exibirMensagens() {
@@ -283,11 +257,9 @@
             for (let i = 0; i < numConfetes; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
-
                 const isLeft = Math.random() < 0.5;
                 confetti.style.left = isLeft ? '0%' : '100%';
                 confetti.style.top = '0%';
-
                 confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
                 confetti.style.setProperty('--dy', `${Math.random() * 2}`);
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
@@ -302,6 +274,25 @@
                     confetti.remove();
                 }, duracao);
             }
+        }
+
+        function exibirGifsExtras() {
+            const gifs = ['Luffy_Lucas_Extra1.gif', 'Luffy_Lucas_Extra2.gif', 'Luffy_Lucas_Extra3.gif', 'Luffy_Lucas_Extra4.gif'];
+            gifs.forEach((gifSrc, index) => {
+                const newGif = document.createElement('img');
+                newGif.src = gifSrc;
+                newGif.style.position = 'absolute';
+                newGif.style.top = `${Math.random() * 80 + 10}%`;
+                newGif.style.left = `${Math.random() * 80 + 10}%`;
+                newGif.style.width = '100px';
+                newGif.style.height = 'auto';
+                newGif.style.zIndex = 999;
+                body.appendChild(newGif);
+
+                setTimeout(() => {
+                    newGif.remove();
+                }, 6000);
+            });
         }
     </script>
 </body>
