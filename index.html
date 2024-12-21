@@ -136,6 +136,7 @@
         let fraseInterval = null;
         let isPaused = false;
         let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
+        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -151,6 +152,7 @@
                 // Após 58 segundos, o gif pode ser exibido
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
+                    gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
                     gif.style.top = '50%';
                     gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
@@ -182,6 +184,7 @@
             // Só exibe o gif depois que a música alcançar 58 segundos
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
+                gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
                 gif.style.top = '50%';
                 gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
@@ -198,6 +201,7 @@
                 // Move o GIF para o lado direito após 600ms
                 gif.style.left = '80%'; // Agora mais próximo da foto
                 gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
+                gifPosition = 'right';
 
                 // Após 600ms, sobe o GIF
                 setTimeout(() => {
@@ -205,54 +209,74 @@
                     gif.style.left = '50%'; // Centraliza horizontalmente
                     gif.style.top = '10%'; // Sobe o GIF
                     gif.style.transform = 'translateX(-50%)'; // Centraliza horizontalmente
+                    gifPosition = 'top';
+
+                    // Após 600ms, desce o GIF
+                    setTimeout(() => {
+                        if (musica.paused) return;
+                        gif.style.top = '80%'; // Desce o GIF
+                        gifPosition = 'bottom';
+                    }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
                 }, 600); // Tempo de 600ms para o GIF mover para a direita
             }, 600); // Tempo de 600ms para o GIF mover para a direita
 
-            // Inicia o movimento aleatório após o GIF atingir a posição superior
+            // Inicia o movimento aleatório após o GIF atingir a 4ª posição (embaixo)
             setTimeout(() => {
-                moverAleatoriamente();
-            }, 2400); // Após o gif subir, ele começa a se mover aleatoriamente
+                if (gifPosition === 'bottom') {
+                    moverAleatoriamente();
+                }
+            }, 2400); // Após o gif descer, ele começa a se mover aleatoriamente
         }
 
         function moverAleatoriamente() {
             setInterval(() => {
-                // Calcula posições aleatórias dentro dos limites da tela
                 const randomX = Math.random() * 100; // posição X aleatória
                 const randomY = Math.random() * 100; // posição Y aleatória
 
-                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
-                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
-
-                // Aplica a transição suave
-                gif.style.transition = `all ${duration}s ease-in-out`;
+                // Atualiza a posição do GIF
                 gif.style.left = `${randomX}%`;
                 gif.style.top = `${randomY}%`;
-
-                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
-                if (Math.random() < 0.5) {
-                    gif.style.transform = 'scaleX(-1)';
-                } else {
-                    gif.style.transform = 'scaleX(1)';
-                }
-            }, 2000); // Faz o GIF mover a cada 2 segundos
+            }, 1000); // Mover a cada 1 segundo
         }
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
-                mensagensDiv.innerHTML = frases[fraseIndex];
-                fraseIndex = (fraseIndex + 1) % frases.length;
-            }, 4000); // Exibe a mensagem a cada 4 segundos
+                if (fraseIndex < frases.length) {
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = frases[fraseIndex];
+                    mensagensDiv.appendChild(novaMensagem);
+                    fraseIndex++;
+                } else {
+                    clearInterval(fraseInterval);
+                }
+            }, 3000);
         }
 
         function explodirConfetes() {
-            for (let i = 0; i < 100; i++) {
-                const confete = document.createElement('div');
-                confete.classList.add('confetti');
-                confete.style.left = `${Math.random() * 100}%`;
-                confete.style.top = `${Math.random() * 100}%`;
-                confete.style.animation = `confettiExplode ${Math.random() * 3 + 2}s forwards`;
-                body.appendChild(confete);
-                setTimeout(() => confete.remove(), 3000); // Remove o confete após a animação
+            const numConfetes = 400;
+            const duracao = 4000;
+
+            for (let i = 0; i < numConfetes; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+
+                const isLeft = Math.random() < 0.5;
+                confetti.style.left = isLeft ? '0%' : '100%';
+                confetti.style.top = '0%';
+
+                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
+                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+                body.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
+                }, 0);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, duracao);
             }
         }
     </script>
