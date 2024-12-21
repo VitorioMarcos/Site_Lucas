@@ -230,7 +230,6 @@
 
         function moverAleatoriamente() {
             setInterval(() => {
-                // Calcula posições aleatórias dentro dos limites da tela
                 const randomX = Math.random() * 100; // posição X aleatória
                 const randomY = Math.random() * 100; // posição Y aleatória
 
@@ -242,32 +241,48 @@
                 gif.style.left = `${randomX}%`;
                 gif.style.top = `${randomY}%`;
 
-                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
-                if (Math.random() < 0.5) {
+                // Adiciona um efeito de espelhamento aleatório
+                if (Math.random() > 0.5) {
                     gif.style.transform = 'scaleX(-1)';
                 } else {
                     gif.style.transform = 'scaleX(1)';
                 }
-            }, 2000); // Faz o GIF mover a cada 2 segundos
+            }, 3000); // Move o gif a cada 3 segundos
         }
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
-                mensagensDiv.innerHTML = frases[fraseIndex];
+                mensagensDiv.textContent = frases[fraseIndex];
                 fraseIndex = (fraseIndex + 1) % frases.length;
-            }, 4000); // Exibe a mensagem a cada 4 segundos
+            }, 3000);
         }
 
         function explodirConfetes() {
             for (let i = 0; i < 100; i++) {
-                const confete = document.createElement('div');
-                confete.classList.add('confetti');
-                confete.style.left = `${Math.random() * 100}%`;
-                confete.style.top = `${Math.random() * 100}%`;
-                confete.style.animation = `confettiExplode ${Math.random() * 3 + 2}s forwards`;
-                body.appendChild(confete);
-                setTimeout(() => confete.remove(), 3000); // Remove o confete após a animação
+                criarConfete();
             }
+        }
+
+        function criarConfete() {
+            const confete = document.createElement('div');
+            confete.classList.add('confetti');
+            body.appendChild(confete);
+
+            // Define a posição inicial aleatória dos confetes
+            confete.style.left = `${Math.random() * 100}vw`;
+            confete.style.top = `${Math.random() * 100}vh`;
+
+            // Cria o movimento aleatório dos confetes
+            const dx = (Math.random() * 2 - 1).toFixed(2);
+            const dy = (Math.random() * 2 - 1).toFixed(2);
+            confete.style.setProperty('--dx', dx);
+            confete.style.setProperty('--dy', dy);
+            confete.style.animation = `confettiExplode ${Math.random() * 3 + 2}s linear forwards`;
+
+            // Remove o confete após a animação
+            confete.addEventListener('animationend', () => {
+                confete.remove();
+            });
         }
     </script>
 </body>
