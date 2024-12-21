@@ -55,8 +55,8 @@
             background-color: #004080;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
+            padding: 20px 40px; /* Dobrado o tamanho do botão */
+            font-size: 1.5rem; /* Aumentado o tamanho da fonte */
             border-radius: 5px;
             cursor: pointer;
             margin: 10px;
@@ -66,13 +66,9 @@
             background-color: #00509E;
         }
 
-        #start-btn {
-            font-size: 2rem; /* Tamanho aumentado */
-            padding: 20px 40px; /* Botão maior */
-        }
-
         #pause-btn {
-            font-size: 1rem; /* Botão de pause com o tamanho original */
+            padding: 10px 20px;
+            font-size: 1rem;
         }
 
         #mensagens {
@@ -141,7 +137,10 @@
             "Caralho, tu ainda tinha cabelo grande naquela época??",
             "A ideia desse site ficou muito boa!",
             "Eu desembolei essa animação na mão, PQP!!",
-            "Enfim, é isso, explosões de vários Luffys só na versão 2.0 :o"
+            "O que eu estou fazendo acordado uma hora dessa, ahhhhh!",
+            "Enfim, é isso, explosões de vários Luffys só na versão 2.0 :o",
+            "",
+            "Feliz Natal, Ano Novo, Boas Festas 🎄🥂"
         ];
         let fraseIndex = 0;
         let fraseInterval = null;
@@ -164,7 +163,7 @@
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
                     gifPosition = 'left'; // Inicialmente no lado esquerdo
-                    gif.style.left = '10%';
+                    gif.style.left = '5%'; // Permite que o gif vá mais para a esquerda
                     gif.style.top = '50%';
                     gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                     gifDisplayed = true;
@@ -196,7 +195,7 @@
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
                 gifPosition = 'left'; // Inicialmente no lado esquerdo
-                gif.style.left = '10%';
+                gif.style.left = '5%'; // Permite que o gif vá mais para a esquerda
                 gif.style.top = '50%';
                 gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                 gifDisplayed = true;
@@ -240,23 +239,23 @@
         }
 
         function moverAleatoriamente() {
-    setInterval(() => {
-        // Calcula posições aleatórias dentro dos limites da tela
-        const randomX = Math.random() * 80 + 10; // Evita que o GIF saia das bordas
-        const randomY = Math.random() * 80 + 10;
+            setInterval(() => {
+                // Calcula posições aleatórias dentro dos limites da tela
+                const randomX = Math.random() * 80 + 10; // Evita que o GIF saia das bordas
+                const randomY = Math.random() * 80 + 10;
 
-        // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
-        const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
+                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
 
-        // Aplica a transição suave
-        gif.style.transition = `all ${duration}s ease-in-out`;
-        gif.style.left = `${randomX}%`;
-        gif.style.top = `${randomY}%`;
+                // Aplica a transição suave
+                gif.style.transition = `all ${duration}s ease-in-out`;
+                gif.style.left = `${randomX}%`;
+                gif.style.top = `${randomY}%`;
 
-        // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
-        gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-    }, 2000); // Faz o GIF mover a cada 2 segundos
-}
+                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
+                gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+            }, 2000); // Faz o GIF mover a cada 2 segundos
+        }
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
