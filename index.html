@@ -149,8 +149,8 @@
             gifDisplayed = false; // Reseta o controle do gif
 
             setTimeout(() => {
-                // Após 58 segundos, o gif pode ser exibido
-                if (musica.paused === false && musica.currentTime >= 58) {
+                // Após 59 segundos, o gif pode ser exibido
+                if (musica.paused === false && musica.currentTime >= 59) {
                     gif.style.display = 'block';
                     gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
@@ -159,14 +159,14 @@
                     gifDisplayed = true;
                     moverGif();
                 }
-            }, 58000); // Alteração para 58 segundos
+            }, 59000);
         });
 
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
-                // Só exibe o gif se a música já passou de 58 segundos
-                if (musica.currentTime >= 58) {
+                // Só exibe o gif se a música já passou de 59 segundos
+                if (musica.currentTime >= 59) {
                     gif.style.display = 'block';
                     moverGif(); // Resume o movimento do GIF
                 }
@@ -181,8 +181,8 @@
         });
 
         musica.addEventListener('timeupdate', () => {
-            // Só exibe o gif depois que a música alcançar 58 segundos
-            if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
+            // Só exibe o gif depois que a música alcançar 59 segundos
+            if (musica.currentTime >= 59 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
                 gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
@@ -217,26 +217,6 @@
                     }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
                 }, 1000);
             }, 600); // Tempo de 600ms para o GIF mover para a direita
-
-            // Inicia o movimento suave após o GIF atingir a 4ª posição (embaixo)
-            setTimeout(() => {
-                if (musica.paused) return;
-                moverAleatoriamente();
-            }, 2400); // Começa após o GIF descer para a posição inferior
-        }
-
-        function moverAleatoriamente() {
-            setInterval(() => {
-                if (musica.paused) return;
-                
-                const randomX = Math.random() * 90; // Largura aleatória até 90% da tela
-                const randomY = Math.random() * 90; // Altura aleatória até 90% da tela
-                const randomRotate = (Math.random() - 0.5) * 360; // Aleatório de rotação de -180 a 180 graus
-
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
-                gif.style.transform = `translate(-50%, -50%) rotate(${randomRotate}deg)`; // Rotaciona e move suavemente
-            }, 1000); // Mover a cada 1 segundo
         }
 
         function exibirMensagens() {
@@ -264,14 +244,14 @@
                 confetti.style.left = isLeft ? '0%' : '100%';
                 confetti.style.top = '0%';
 
-                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
-                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                confetti.style.setProperty('--dx', ${Math.random() * (isLeft ? 1 : -1)});
+                confetti.style.setProperty('--dy', ${Math.random() * 2});
+                confetti.style.backgroundColor = hsl(${Math.random() * 360}, 100%, 70%);
 
                 body.appendChild(confetti);
 
                 setTimeout(() => {
-                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
+                    confetti.style.animation = confettiExplode ${duracao / 1000}s ease-out forwards;
                 }, 0);
 
                 setTimeout(() => {
