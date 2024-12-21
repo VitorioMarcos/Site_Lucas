@@ -12,7 +12,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         h1 {
@@ -36,7 +36,7 @@
         #gif {
             display: none;
             position: absolute;
-            width: 300px; /* Dobrado para 300px */
+            width: 300px;
             height: auto;
             top: 50%;
             left: 10%;
@@ -51,8 +51,8 @@
 
         #foto {
             display: none;
-            width: 500px; /* Atualizado para 500px */
-            height: 500px; /* Atualizado para 500px */
+            width: 500px;
+            height: 500px;
             border-radius: 20px;
             margin: 20px auto;
         }
@@ -185,18 +185,19 @@
         }
 
         function explodirConfetes() {
-            const numConfetes = 400; // Dobramos a quantidade
-            const duracao = 4000; // Aumentado o tempo de permanência
+            const numConfetes = 400;
+            const duracao = 4000;
 
             for (let i = 0; i < numConfetes; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
 
-                confetti.style.left = Math.random() < 0.5 ? '0%' : '100%';
-                confetti.style.top = `${Math.random() * window.innerHeight}px`;
+                const isLeft = Math.random() < 0.5;
+                confetti.style.left = isLeft ? '0%' : '100%';
+                confetti.style.top = '0%';
 
-                confetti.style.setProperty('--dx', `${Math.random() * 2 - 1}`);
-                confetti.style.setProperty('--dy', `${Math.random() * 2 - 1}`);
+                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
+                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
 
                 body.appendChild(confetti);
