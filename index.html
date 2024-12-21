@@ -41,6 +41,7 @@
             top: 50%;
             left: 10%;
             transform: translateY(-50%);
+            transition: transform 2s ease-out; /* Transição suave para o movimento */
         }
 
         #foto {
@@ -135,7 +136,7 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
+        let gifDisplayed = false; // Controla se o gif já foi exibido após 58 segundos
         let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
 
         startBtn.addEventListener('click', () => {
@@ -223,19 +224,22 @@
             // Inicia o movimento aleatório após o GIF atingir a 4ª posição (embaixo)
             setTimeout(() => {
                 if (gifPosition === 'bottom') {
-                    moverAleatoriamente();
+                    moverComRotacao();
                 }
             }, 2400); // Após o gif descer, ele começa a se mover aleatoriamente
         }
 
-        function moverAleatoriamente() {
+        function moverComRotacao() {
             setInterval(() => {
-                const randomX = Math.random() * 100; // posição X aleatória
-                const randomY = Math.random() * 100; // posição Y aleatória
+                if (musica.paused) return;
+                
+                // Definindo uma posição aleatória
+                let randomX = Math.random() * 100;
+                let randomY = Math.random() * 100;
+                let randomRotation = Math.random() * 360; // Gira aleatoriamente entre 0 e 360 graus
 
-                // Atualiza a posição do GIF
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
+                // Movendo o gif para a nova posição e girando ao mesmo tempo
+                gif.style.transform = `translate(${randomX}%, ${randomY}%) rotate(${randomRotation}deg)`;
             }, 1000); // Mover a cada 1 segundo
         }
 
