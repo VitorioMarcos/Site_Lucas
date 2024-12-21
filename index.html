@@ -1,189 +1,37 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presente para Lucas</title>
-    <style>
-        body {
-            background-color: #001a33;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            overflow-y: auto;
-        }
+<script>
+    const startBtn = document.getElementById('start-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const gif = document.getElementById('gif');
+    const musica = document.getElementById('musica');
+    const foto = document.getElementById('foto');
+    const mensagensDiv = document.getElementById('mensagens');
+    const body = document.body;
 
-        h1 {
-            font-size: 4rem;
-            margin: 20px 10px;
-            line-height: 1.2;
-            color: #FFFFFF;
-            text-shadow: 0 0 30px #BB86FC, 0 0 60px #6200EA;
-            animation: enhancedGlow 3s infinite alternate;
-        }
+    let frases = [
+        "Você é incrível!",
+        "Mais um ano de conquistas!",
+        "Desejamos tudo de bom!",
+        "Parabéns pelo seu dia!"
+    ];
+    let fraseIndex = 0;
+    let fraseInterval = null;
+    let isPaused = false;
+    let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
+    let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
 
-        @keyframes enhancedGlow {
-            0% {
-                text-shadow: 0 0 40px #BB86FC, 0 0 80px #BB86FC;
-            }
-            100% {
-                text-shadow: 0 0 40px #00509E, 0 0 80px #00509E;
-            }
-        }
+    startBtn.addEventListener('click', () => {
+        musica.currentTime = 0;
+        musica.play();
+        foto.style.display = 'block';
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'inline-block';
+        exibirMensagens();
+        explodirConfetes();
+        gifDisplayed = false; // Reseta o controle do gif
 
-        #gif {
-            display: none;
-            position: absolute;
-            width: 300px;
-            height: auto;
-            top: 50%;
-            left: 10%;
-            transform: translateY(-50%);
-            transition: all 600ms ease-out; /* Adicionando uma transição suave de 600ms */
-        }
-
-        #foto {
-            display: none;
-            width: 500px;
-            height: 500px;
-            border-radius: 20px;
-            margin: 20px auto;
-        }
-
-        button {
-            background-color: #004080;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
-        }
-
-        button:hover {
-            background-color: #00509E;
-        }
-
-        #mensagens {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 1.2rem;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #FFFFFF;
-            opacity: 0.7;
-            border-radius: 50%;
-        }
-
-        @keyframes confettiExplode {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(calc(var(--dx) * 600px), calc(var(--dy) * 600px)) scale(0.5);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-                margin: 10px;
-            }
-
-            #foto {
-                width: 300px;
-                height: 300px;
-            }
-
-            button {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h1>Espero que você<br>tenha curtido o seu presente!</h1>
-    <img id="foto" src="foto_amigo.jpg" alt="Foto do amigo">
-    <div id="mensagens"></div>
-    <button id="start-btn">Começar</button>
-    <button id="pause-btn" style="display: none;">Pause</button>
-    <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
-    <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
-    <script>
-        const startBtn = document.getElementById('start-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const gif = document.getElementById('gif');
-        const musica = document.getElementById('musica');
-        const foto = document.getElementById('foto');
-        const mensagensDiv = document.getElementById('mensagens');
-        const body = document.body;
-
-        let frases = [
-            "Você é incrível!",
-            "Mais um ano de conquistas!",
-            "Desejamos tudo de bom!",
-            "Parabéns pelo seu dia!"
-        ];
-        let fraseIndex = 0;
-        let fraseInterval = null;
-        let isPaused = false;
-        let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
-        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
-
-        startBtn.addEventListener('click', () => {
-            musica.currentTime = 0;
-            musica.play();
-            foto.style.display = 'block';
-            startBtn.style.display = 'none';
-            pauseBtn.style.display = 'inline-block';
-            exibirMensagens();
-            explodirConfetes();
-            gifDisplayed = false; // Reseta o controle do gif
-
-            setTimeout(() => {
-                // Após 59 segundos, o gif pode ser exibido
-                if (musica.paused === false && musica.currentTime >= 59) {
-                    gif.style.display = 'block';
-                    gifPosition = 'left'; // Inicialmente no lado esquerdo
-                    gif.style.left = '10%';
-                    gif.style.top = '50%';
-                    gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
-                    gifDisplayed = true;
-                    moverGif();
-                }
-            }, 59000);
-        });
-
-        pauseBtn.addEventListener('click', () => {
-            if (isPaused) {
-                musica.play();
-                // Só exibe o gif se a música já passou de 59 segundos
-                if (musica.currentTime >= 59) {
-                    gif.style.display = 'block';
-                    moverGif(); // Resume o movimento do GIF
-                }
-                pauseBtn.textContent = "Pause";
-            } else {
-                musica.pause();
-                clearInterval(fraseInterval);
-                gif.style.display = 'none'; // Esconde o gif quando a música é pausada
-                pauseBtn.textContent = "Play";
-            }
-            isPaused = !isPaused;
-        });
-
-        musica.addEventListener('timeupdate', () => {
-            // Só exibe o gif depois que a música alcançar 59 segundos
-            if (musica.currentTime >= 59 && !gifDisplayed && !musica.paused) {
+        setTimeout(() => {
+            // Após 59 segundos, o gif pode ser exibido
+            if (musica.paused === false && musica.currentTime >= 59) {
                 gif.style.display = 'block';
                 gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
@@ -191,76 +39,107 @@
                 gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
                 gifDisplayed = true;
                 moverGif();
-            } else if (musica.paused) {
-                gif.style.display = 'none'; // Esconde o gif quando a música for pausada
             }
-        });
+        }, 59000);
+    });
 
-        function moverGif() {
+    pauseBtn.addEventListener('click', () => {
+        if (isPaused) {
+            musica.play();
+            // Só exibe o gif se a música já passou de 59 segundos
+            if (musica.currentTime >= 59) {
+                gif.style.display = 'block';
+                moverGif(); // Resume o movimento do GIF
+            }
+            pauseBtn.textContent = "Pause";
+        } else {
+            musica.pause();
+            clearInterval(fraseInterval);
+            gif.style.display = 'none'; // Esconde o gif quando a música é pausada
+            pauseBtn.textContent = "Play";
+        }
+        isPaused = !isPaused;
+    });
+
+    musica.addEventListener('timeupdate', () => {
+        // Só exibe o gif depois que a música alcançar 59 segundos
+        if (musica.currentTime >= 59 && !gifDisplayed && !musica.paused) {
+            gif.style.display = 'block';
+            gifPosition = 'left'; // Inicialmente no lado esquerdo
+            gif.style.left = '10%';
+            gif.style.top = '50%';
+            gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
+            gifDisplayed = true;
+            moverGif();
+        } else if (musica.paused) {
+            gif.style.display = 'none'; // Esconde o gif quando a música for pausada
+        }
+    });
+
+    function moverGif() {
+        setTimeout(() => {
+            if (musica.paused) return; // Respeita a pausa da música
+            // Move o GIF para o lado direito após 600ms
+            gif.style.left = '80%'; // Agora mais próximo da foto
+            gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
+            gifPosition = 'right';
+
+            // Após 600ms, sobe o GIF
             setTimeout(() => {
-                if (musica.paused) return; // Respeita a pausa da música
-                // Move o GIF para o lado direito após 600ms
-                gif.style.left = '80%'; // Agora mais próximo da foto
-                gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
-                gifPosition = 'right';
+                if (musica.paused) return;
+                gif.style.left = '50%'; // Centraliza horizontalmente
+                gif.style.top = '10%'; // Sobe o GIF
+                gif.style.transform = 'translateX(-50%)'; // Centraliza horizontalmente
+                gifPosition = 'top';
 
-                // Após 600ms, sobe o GIF para o centro horizontal
+                // Após 600ms, desce o GIF
                 setTimeout(() => {
                     if (musica.paused) return;
-                    gif.style.left = '50%'; // Centraliza horizontalmente
-                    gif.style.top = '10%'; // Sobe o GIF
-                    gifPosition = 'top';
-
-                    // Após 600ms, desce o GIF
-                    setTimeout(() => {
-                        if (musica.paused) return;
-                        gif.style.top = '80%'; // Desce o GIF
-                        gifPosition = 'bottom';
-                    }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
-                }, 600); // Tempo de 600ms para o GIF mover para a direita
+                    gif.style.top = '80%'; // Desce o GIF
+                    gifPosition = 'bottom';
+                }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
             }, 600); // Tempo de 600ms para o GIF mover para a direita
-        }
+        }, 600); // Tempo de 600ms para o GIF mover para a direita
+    }
 
-        function exibirMensagens() {
-            fraseInterval = setInterval(() => {
-                if (fraseIndex < frases.length) {
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = frases[fraseIndex];
-                    mensagensDiv.appendChild(novaMensagem);
-                    fraseIndex++;
-                } else {
-                    clearInterval(fraseInterval);
-                }
-            }, 3000);
-        }
-
-        function explodirConfetes() {
-            const numConfetes = 400;
-            const duracao = 4000;
-
-            for (let i = 0; i < numConfetes; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-
-                const isLeft = Math.random() < 0.5;
-                confetti.style.left = isLeft ? '0%' : '100%';
-                confetti.style.top = '0%';
-
-                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
-                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-
-                body.appendChild(confetti);
-
-                setTimeout(() => {
-                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
-                }, 0);
-
-                setTimeout(() => {
-                    confetti.remove();
-                }, duracao);
+    function exibirMensagens() {
+        fraseInterval = setInterval(() => {
+            if (fraseIndex < frases.length) {
+                const novaMensagem = document.createElement('p');
+                novaMensagem.textContent = frases[fraseIndex];
+                mensagensDiv.appendChild(novaMensagem);
+                fraseIndex++;
+            } else {
+                clearInterval(fraseInterval);
             }
+        }, 3000);
+    }
+
+    function explodirConfetes() {
+        const numConfetes = 400;
+        const duracao = 4000;
+
+        for (let i = 0; i < numConfetes; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+
+            const isLeft = Math.random() < 0.5;
+            confetti.style.left = isLeft ? '0%' : '100%';
+            confetti.style.top = '0%';
+
+            confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
+            confetti.style.setProperty('--dy', `${Math.random() * 2}`);
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+            body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
+            }, 0);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, duracao);
         }
-    </script>
-</body>
-</html>
+    }
+</script>
