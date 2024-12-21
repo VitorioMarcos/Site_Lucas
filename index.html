@@ -230,16 +230,25 @@
 
         function moverAleatoriamente() {
             setInterval(() => {
-                if (musica.paused) return;
-                
-                const randomX = Math.random() * 90; // Largura aleatória até 90% da tela
-                const randomY = Math.random() * 90; // Altura aleatória até 90% da tela
-                const randomRotate = (Math.random() - 0.5) * 360; // Aleatório de rotação de -180 a 180 graus
+                // Calcula posições aleatórias dentro dos limites da tela
+                const randomX = Math.random() * 100; // posição X aleatória
+                const randomY = Math.random() * 100; // posição Y aleatória
 
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
-                gif.style.transform = `translate(-50%, -50%) rotate(${randomRotate}deg)`; // Rotaciona e move suavemente
-            }, 2000); // Mover a cada 1 segundo
+                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
+
+                // Aplica a transição suave
+                gif.style.transition = all ${duration}s ease-in-out;
+                gif.style.left = ${randomX}%;
+                gif.style.top = ${randomY}%;
+
+                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
+                if (Math.random() < 0.5) {
+                    gif.style.transform = 'scaleX(-1)';
+                } else {
+                    gif.style.transform = 'scaleX(1)';
+                }
+            }, 2000); // Faz o GIF mover a cada 2 segundos
         }
 
         function exibirMensagens() {
