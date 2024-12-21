@@ -38,6 +38,9 @@
             position: absolute;
             width: 150px;
             height: auto;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
             animation: float 5s infinite;
         }
 
@@ -150,8 +153,9 @@
 
             setTimeout(() => {
                 gif.style.display = 'block';
-                gif.style.left = `${foto.offsetLeft - gif.offsetWidth - 20}px`;
-                gif.style.top = `${foto.offsetTop}px`;
+                gif.style.top = `50%`;
+                gif.style.left = `10%`;
+                gif.style.transform = `translateY(-50%)`;
             }, 59000); // Mostrar GIF após 59 segundos
         });
 
