@@ -36,7 +36,7 @@
         #gif {
             display: none;
             position: absolute;
-            width: 300px; /* Dobrado para 300px */
+            width: 300px;
             height: auto;
             top: 50%;
             left: 10%;
@@ -51,8 +51,8 @@
 
         #foto {
             display: none;
-            width: 500px; /* Atualizado para 500px */
-            height: 500px; /* Atualizado para 500px */
+            width: 500px;
+            height: 500px;
             border-radius: 20px;
             margin: 20px auto;
         }
@@ -141,8 +141,7 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let musicaTimer = null;
-        let gifExibido = false;  // Controle se o gif foi exibido
+        let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -152,31 +151,43 @@
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
+            gifDisplayed = false; // Reseta o controle do gif
 
-            musicaTimer = setInterval(() => {
-                if (musica.currentTime >= 59 && !gifExibido) {
-                    gif.style.display = 'block'; // Exibe o GIF após 59s
-                    gifExibido = true;  // Marca o gif como exibido
+            setTimeout(() => {
+                // Após 59 segundos, o gif pode ser exibido
+                if (musica.paused === false && musica.currentTime >= 59) {
+                    gif.style.display = 'block';
+                    gifDisplayed = true;
                 }
-            }, 1000);
+            }, 59000);
         });
 
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
                 exibirMensagens();
-                if (musica.currentTime >= 59 && !gifExibido) {
+                // Só exibe o gif se a música já passou de 59 segundos
+                if (musica.currentTime >= 59) {
                     gif.style.display = 'block';
-                    gifExibido = true;
                 }
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
                 clearInterval(fraseInterval);
-                gif.style.display = 'none'; // Oculta o gif
+                gif.style.display = 'none'; // Esconde o gif quando a música é pausada
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
+        });
+
+        musica.addEventListener('timeupdate', () => {
+            // Só exibe o gif depois que a música alcançar 59 segundos
+            if (musica.currentTime >= 59 && !gifDisplayed && !musica.paused) {
+                gif.style.display = 'block';
+                gifDisplayed = true;
+            } else if (musica.paused) {
+                gif.style.display = 'none'; // Esconde o gif quando a música for pausada
+            }
         });
 
         function exibirMensagens() {
@@ -193,18 +204,19 @@
         }
 
         function explodirConfetes() {
-            const numConfetes = 400; // Dobramos a quantidade
-            const duracao = 4000; // Aumentado o tempo de permanência
+            const numConfetes = 400;
+            const duracao = 4000;
 
             for (let i = 0; i < numConfetes; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
 
-                confetti.style.left = Math.random() < 0.5 ? '0%' : '100%';
-                confetti.style.top = `${Math.random() * window.innerHeight}px`;
+                const isLeft = Math.random() < 0.5;
+                confetti.style.left = isLeft ? '0%' : '100%';
+                confetti.style.top = '0%';
 
-                confetti.style.setProperty('--dx', `${Math.random() * 2 - 1}`);
-                confetti.style.setProperty('--dy', `${Math.random() * 2 - 1}`);
+                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
+                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
 
                 body.appendChild(confetti);
