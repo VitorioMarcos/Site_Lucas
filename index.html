@@ -230,13 +230,16 @@
 
         function moverAleatoriamente() {
             setInterval(() => {
-                const randomX = Math.random() * 100; // posição X aleatória
-                const randomY = Math.random() * 100; // posição Y aleatória
+                if (musica.paused) return;
+                
+                const randomX = Math.random() * 90; // Largura aleatória até 90% da tela
+                const randomY = Math.random() * 90; // Altura aleatória até 90% da tela
+                const randomRotate = (Math.random() - 0.5) * 360; // Aleatório de rotação de -180 a 180 graus
 
-                // Atualiza a posição do GIF
                 gif.style.left = `${randomX}%`;
                 gif.style.top = `${randomY}%`;
-            }, 1000); // Mover a cada 1 segundo
+                gif.style.transform = `translate(-50%, -50%) rotate(${randomRotate}deg)`; // Rotaciona e move suavemente
+            }, 2000); // Mover a cada 1 segundo
         }
 
         function exibirMensagens() {
