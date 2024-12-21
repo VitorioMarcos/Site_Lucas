@@ -132,16 +132,16 @@
         const body = document.body;
 
         let frases = [
-            "Temos pouquíssimas fotos juntos hein...",
-            "Foi difícil achar alguma foto, mas sem terceiros foi impossível kkkkk",
-            "Caralho, tu ainda tinha cabelo grande naquela época??",
-            "A ideia desse site ficou muito boa!",
-            "Eu desembolei essa animação na mão, PQP!!",
-            "O que eu estou fazendo acordado uma hora dessa, ahhhhh!",
-            "Enfim, é isso, explosões de vários Luffys só na versão 2.0 :o",
-            "",
-            "Feliz Natal, Ano Novo, Boas Festas 🎄🥂"
+            { tempo: 10, texto: "Temos pouquíssimas fotos juntos hein..." },
+            { tempo: 25, texto: "Foi difícil achar alguma foto, mas sem terceiros foi impossível kkkkk" },
+            { tempo: 40, texto: "Caralho, tu ainda tinha cabelo grande naquela época??" },
+            { tempo: 55, texto: "A ideia desse site ficou muito boa!" },
+            { tempo: 70, texto: "Eu desembolei essa animação na mão, PQP!!" },
+            { tempo: 85, texto: "O que eu estou fazendo acordado um hora dessa, ahhhhh!" },
+            { tempo: 100, texto: "Enfim, é isso, explosões de vários Luffys só na versão 2.0 :o" },
+            { tempo: 120, texto: "Feliz Natal, Feliz Ano Novo, Boas Festas 🎄🥂" }
         ];
+
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
@@ -191,6 +191,14 @@
         });
 
         musica.addEventListener('timeupdate', () => {
+            // Exibe as frases de acordo com o tempo da música
+            for (let i = fraseIndex; i < frases.length; i++) {
+                if (musica.currentTime >= frases[i].tempo && !isPaused) {
+                    exibirFrase(frases[i].texto);
+                    fraseIndex++;
+                }
+            }
+
             // Só exibe o gif depois que a música alcançar 58 segundos
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
@@ -204,6 +212,15 @@
                 gif.style.display = 'none'; // Esconde o gif quando a música for pausada
             }
         });
+
+        function exibirFrase(frase) {
+            const novaMensagem = document.createElement('p');
+            novaMensagem.textContent = frase;
+            mensagensDiv.appendChild(novaMensagem);
+            if (frase === "Enfim, é isso, explosões de vários Luffys só na versão 2.0 :o") {
+                novaMensagem.style.marginBottom = "40px"; // Espaço adicional antes da última frase
+            }
+        }
 
         function moverGif() {
             setTimeout(() => {
@@ -255,19 +272,6 @@
                 // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
                 gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
             }, 2000); // Faz o GIF mover a cada 2 segundos
-        }
-
-        function exibirMensagens() {
-            fraseInterval = setInterval(() => {
-                if (fraseIndex < frases.length) {
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = frases[fraseIndex];
-                    mensagensDiv.appendChild(novaMensagem);
-                    fraseIndex++;
-                } else {
-                    clearInterval(fraseInterval);
-                }
-            }, 3000);
         }
 
         function explodirConfetes() {
