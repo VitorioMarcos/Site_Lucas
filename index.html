@@ -229,27 +229,23 @@
         }
 
         function moverAleatoriamente() {
-            setInterval(() => {
-                // Calcula posições aleatórias dentro dos limites da tela
-                const randomX = Math.random() * 100; // posição X aleatória
-                const randomY = Math.random() * 100; // posição Y aleatória
+    setInterval(() => {
+        // Calcula posições aleatórias dentro dos limites da tela
+        const randomX = Math.random() * 80 + 10; // Evita que o GIF saia das bordas
+        const randomY = Math.random() * 80 + 10;
 
-                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
-                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
+        // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+        const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
 
-                // Aplica a transição suave
-                gif.style.transition = `all ${duration}s ease-in-out`;
-                gif.style.left = ${randomX}%;
-                gif.style.top = ${randomY}%;
+        // Aplica a transição suave
+        gif.style.transition = `all ${duration}s ease-in-out`;
+        gif.style.left = `${randomX}%`;
+        gif.style.top = `${randomY}%`;
 
-                // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
-                if (Math.random() < 0.5) {
-                    gif.style.transform = 'scaleX(-1)';
-                } else {
-                    gif.style.transform = 'scaleX(1)';
-                }
-            }, 2000); // Faz o GIF mover a cada 2 segundos
-        }
+        // Adiciona um efeito de espelhamento (scaleX(-1)) para randomizar o movimento
+        gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+    }, 2000); // Faz o GIF mover a cada 2 segundos
+}
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
