@@ -136,7 +136,6 @@
         let fraseInterval = null;
         let isPaused = false;
         let gifDisplayed = false; // Controla se o gif já foi exibido após 59 segundos
-        let gifPosition = 'left'; // Controle da posição do gif (esquerda, direita, cima, baixo)
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -152,7 +151,6 @@
                 // Após 58 segundos, o gif pode ser exibido
                 if (musica.paused === false && musica.currentTime >= 58) {
                     gif.style.display = 'block';
-                    gifPosition = 'left'; // Inicialmente no lado esquerdo
                     gif.style.left = '10%';
                     gif.style.top = '50%';
                     gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
@@ -184,7 +182,6 @@
             // Só exibe o gif depois que a música alcançar 58 segundos
             if (musica.currentTime >= 58 && !gifDisplayed && !musica.paused) {
                 gif.style.display = 'block';
-                gifPosition = 'left'; // Inicialmente no lado esquerdo
                 gif.style.left = '10%';
                 gif.style.top = '50%';
                 gif.style.transform = 'translateY(-50%)'; // Mantém o GIF centralizado verticalmente
@@ -201,7 +198,6 @@
                 // Move o GIF para o lado direito após 600ms
                 gif.style.left = '80%'; // Agora mais próximo da foto
                 gif.style.transform = 'translateY(-50%) scaleX(-1)'; // Espelha o GIF
-                gifPosition = 'right';
 
                 // Após 600ms, sobe o GIF
                 setTimeout(() => {
@@ -209,23 +205,13 @@
                     gif.style.left = '50%'; // Centraliza horizontalmente
                     gif.style.top = '10%'; // Sobe o GIF
                     gif.style.transform = 'translateX(-50%)'; // Centraliza horizontalmente
-                    gifPosition = 'top';
-
-                    // Após 600ms, desce o GIF
-                    setTimeout(() => {
-                        if (musica.paused) return;
-                        gif.style.top = '80%'; // Desce o GIF
-                        gifPosition = 'bottom';
-                    }, 600); // Tempo de 600ms para o GIF ir de cima para baixo
                 }, 600); // Tempo de 600ms para o GIF mover para a direita
             }, 600); // Tempo de 600ms para o GIF mover para a direita
 
-            // Inicia o movimento aleatório após o GIF atingir a 4ª posição (embaixo)
+            // Inicia o movimento aleatório após o GIF atingir a posição superior
             setTimeout(() => {
-                if (gifPosition === 'bottom') {
-                    moverAleatoriamente();
-                }
-            }, 2400); // Após o gif descer, ele começa a se mover aleatoriamente
+                moverAleatoriamente();
+            }, 2400); // Após o gif subir, ele começa a se mover aleatoriamente
         }
 
         function moverAleatoriamente() {
