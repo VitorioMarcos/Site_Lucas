@@ -33,10 +33,10 @@
             }
         }
 
-        .gif {
+        #gif, .gif-extra {
             display: none;
             position: absolute;
-            width: 300px;
+            width: 200px;
             height: auto;
         }
 
@@ -112,17 +112,18 @@
     <div id="mensagens"></div>
     <button id="start-btn">Começar</button>
     <button id="pause-btn" style="display: none;">Pause</button>
-    <img id="gif1" class="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
-    <img id="gif2" class="gif" src="gif2.gif" alt="Celebration GIF 2">
-    <img id="gif3" class="gif" src="gif3.gif" alt="Celebration GIF 3">
-    <img id="gif4" class="gif" src="gif4.gif" alt="Celebration GIF 4">
-    <img id="gif5" class="gif" src="gif5.gif" alt="Celebration GIF 5">
+    <img id="gif" src="Luffy_Lucas.gif" alt="Celebration GIF">
+    <img class="gif-extra" src="Luffy_Lucas.gif" alt="Extra Celebration GIF">
+    <img class="gif-extra" src="Luffy_Lucas.gif" alt="Extra Celebration GIF">
+    <img class="gif-extra" src="Luffy_Lucas.gif" alt="Extra Celebration GIF">
+    <img class="gif-extra" src="Luffy_Lucas.gif" alt="Extra Celebration GIF">
     <audio id="musica" src="Stay_With_Me.mp3" preload="auto"></audio>
     <script>
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.getElementById('pause-btn');
+        const gif = document.getElementById('gif');
+        const gifExtras = document.querySelectorAll('.gif-extra');
         const musica = document.getElementById('musica');
-        const gifs = document.querySelectorAll('.gif');
         const foto = document.getElementById('foto');
         const mensagensDiv = document.getElementById('mensagens');
         const body = document.body;
@@ -136,7 +137,8 @@
         let fraseIndex = 0;
         let fraseInterval = null;
         let isPaused = false;
-        let gifTimers = [];
+        let gifDisplayed = false;
+        let extraGifsDisplayed = false;
 
         startBtn.addEventListener('click', () => {
             musica.currentTime = 0;
@@ -146,25 +148,50 @@
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
             explodirConfetes();
-
-            setTimeout(() => {
-                exibirGifs();
-            }, 142000); // 2 minutos e 22 segundos (142000ms)
         });
 
         pauseBtn.addEventListener('click', () => {
             if (isPaused) {
                 musica.play();
-                gifs.forEach(gif => gif.style.display = 'block');
+                gif.style.display = 'block';
+                gifExtras.forEach(g => g.style.display = 'block');
                 pauseBtn.textContent = "Pause";
             } else {
                 musica.pause();
-                clearInterval(fraseInterval);
-                gifs.forEach(gif => gif.style.display = 'none');
+                gif.style.display = 'none';
+                gifExtras.forEach(g => g.style.display = 'none');
                 pauseBtn.textContent = "Play";
             }
             isPaused = !isPaused;
         });
+
+        musica.addEventListener('timeupdate', () => {
+            if (musica.currentTime >= 58 && !gifDisplayed) {
+                gif.style.display = 'block';
+                moverAleatoriamente(gif);
+                gifDisplayed = true;
+            }
+
+            if (musica.currentTime >= 142 && !extraGifsDisplayed) { // 2:22 em segundos
+                gifExtras.forEach(g => {
+                    g.style.display = 'block';
+                    moverAleatoriamente(g);
+                });
+                extraGifsDisplayed = true;
+            }
+        });
+
+        function moverAleatoriamente(element) {
+            setInterval(() => {
+                const randomX = Math.random() * 80 + 10;
+                const randomY = Math.random() * 80 + 10;
+                const duration = Math.random() * 2 + 1;
+                element.style.transition = `all ${duration}s ease-in-out`;
+                element.style.left = `${randomX}%`;
+                element.style.top = `${randomY}%`;
+                element.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+            }, 2000);
+        }
 
         function exibirMensagens() {
             fraseInterval = setInterval(() => {
@@ -205,33 +232,6 @@
                     confetti.remove();
                 }, duracao);
             }
-        }
-
-        function exibirGifs() {
-            gifs.forEach(gif => {
-                gif.style.display = 'block';
-                moverAleatoriamente(gif);
-            });
-        }
-
-        function moverAleatoriamente(gif) {
-            const interval = setInterval(() => {
-                if (musica.paused) {
-                    clearInterval(interval);
-                    return;
-                }
-
-                const randomX = Math.random() * 80 + 10;
-                const randomY = Math.random() * 80 + 10;
-                const duration = Math.random() * 2 + 1;
-
-                gif.style.transition = `all ${duration}s ease-in-out`;
-                gif.style.left = `${randomX}%`;
-                gif.style.top = `${randomY}%`;
-                gif.style.transform = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-            }, 2000);
-
-            gifTimers.push(interval);
         }
     </script>
 </body>
