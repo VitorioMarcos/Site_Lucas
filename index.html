@@ -234,8 +234,8 @@
                 const randomY = Math.random() * 100; // posição Y aleatória
 
                 // Atualiza a posição do GIF
-                gif.style.left = ${randomX}%;
-                gif.style.top = ${randomY}%;
+                gif.style.left = `${randomX}%`;
+                gif.style.top = `${randomY}%`;
             }, 1000); // Mover a cada 1 segundo
         }
 
@@ -264,14 +264,14 @@
                 confetti.style.left = isLeft ? '0%' : '100%';
                 confetti.style.top = '0%';
 
-                confetti.style.setProperty('--dx', ${Math.random() * (isLeft ? 1 : -1)});
-                confetti.style.setProperty('--dy', ${Math.random() * 2});
-                confetti.style.backgroundColor = hsl(${Math.random() * 360}, 100%, 70%);
+                confetti.style.setProperty('--dx', `${Math.random() * (isLeft ? 1 : -1)}`);
+                confetti.style.setProperty('--dy', `${Math.random() * 2}`);
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
 
                 body.appendChild(confetti);
 
                 setTimeout(() => {
-                    confetti.style.animation = confettiExplode ${duracao / 1000}s ease-out forwards;
+                    confetti.style.animation = `confettiExplode ${duracao / 1000}s ease-out forwards`;
                 }, 0);
 
                 setTimeout(() => {
