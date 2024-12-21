@@ -19,18 +19,21 @@
             font-size: 4rem;
             margin: 20px 10px;
             line-height: 1.2;
-            animation: enhancedGlow 3s infinite alternate;
+            color: #FFFFFF;
+            text-shadow: 0 0 30px #BB86FC, 0 0 60px #6200EA, 0 0 90px #BB86FC;
         }
 
         @keyframes enhancedGlow {
             0% {
-                color: #FFFFFF; /* Branco */
-                text-shadow: 0 0 20px #BB86FC, 0 0 40px #6200EA, 0 0 60px #BB86FC;
+                text-shadow: 0 0 40px #BB86FC, 0 0 80px #6200EA, 0 0 120px #BB86FC;
             }
             100% {
-                color: #00509E; /* Azul do botão */
-                text-shadow: 0 0 20px #BB86FC, 0 0 40px #6200EA, 0 0 60px #BB86FC;
+                text-shadow: 0 0 60px #FF4500, 0 0 100px #FF6347, 0 0 140px #FF4500;
             }
+        }
+
+        h1 {
+            animation: enhancedGlow 3s infinite alternate;
         }
 
         #gif {
@@ -50,9 +53,9 @@
         }
 
         #foto {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
             margin: 20px 0;
         }
 
@@ -72,7 +75,7 @@
         }
 
         #mensagens {
-            margin-top: 20px;
+            margin-top: 40px;
             text-align: center;
             font-size: 1.2rem;
         }
@@ -84,7 +87,6 @@
             background-color: #FFFFFF;
             opacity: 0.7;
             border-radius: 50%;
-            animation: confettiExplode 3s ease-out forwards, fadeOut 3s ease-in forwards;
         }
 
         @keyframes confettiExplode {
@@ -92,15 +94,17 @@
                 transform: translate(0, 0) scale(1);
             }
             100% {
-                transform: translate(calc(var(--dx) * 100px), calc(var(--dy) * 100px)) scale(0.5);
+                transform: translate(calc(var(--dx) * 500px), calc(var(--dy) * 500px)) scale(0.5);
             }
         }
 
-        @keyframes fadeOut {
+        @keyframes confettiFall {
             0% {
+                transform: translateY(-100%);
                 opacity: 1;
             }
             100% {
+                transform: translateY(100vh);
                 opacity: 0;
             }
         }
@@ -138,7 +142,7 @@
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'inline-block';
             exibirMensagens();
-            estourarConfetes();
+            explodirConfetes();
         });
 
         pauseBtn.addEventListener('click', () => {
@@ -167,20 +171,25 @@
             }, 3000);
         }
 
-        function estourarConfetes() {
-            for (let i = 0; i < 100; i++) {
+        function explodirConfetes() {
+            const numConfetes = 200;
+            for (let i = 0; i < numConfetes; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
-                confetti.style.left = `${window.innerWidth / 2}px`;
-                confetti.style.top = `${window.innerHeight / 2}px`;
+                confetti.style.left = `${startBtn.offsetLeft + startBtn.offsetWidth / 2}px`;
+                confetti.style.top = `${startBtn.offsetTop}px`;
                 confetti.style.setProperty('--dx', `${Math.random() * 2 - 1}`);
                 confetti.style.setProperty('--dy', `${Math.random() * 2 - 1}`);
                 confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
                 body.appendChild(confetti);
 
                 setTimeout(() => {
+                    confetti.style.animation = `confettiExplode 1s ease-out forwards`;
+                }, 0);
+
+                setTimeout(() => {
                     confetti.remove();
-                }, 3000);
+                }, 1000);
             }
         }
     </script>
