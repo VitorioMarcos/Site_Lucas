@@ -41,7 +41,7 @@
             top: 50%;
             left: 10%;
             transform: translateY(-50%);
-            transition: all 2s ease-in-out; /* Suaviza a transição do movimento e rotação */
+            transition: all 2s ease-in-out; /* Transição suave para as mudanças */
         }
 
         #foto {
@@ -221,25 +221,37 @@
                 }, 600); // Tempo de 600ms para o GIF mover para a direita
             }, 600); // Tempo de 600ms para o GIF mover para a direita
 
-            // Inicia o movimento suave após o GIF atingir a 4ª posição (embaixo)
+            // Inicia o movimento aleatório após o GIF atingir a 4ª posição (embaixo)
             setTimeout(() => {
-                if (musica.paused) return;
-                moverAleatoriamente();
-            }, 2400); // Começa após o GIF descer para a posição inferior
+                if (gifPosition === 'bottom') {
+                    moverAleatoriamente();
+                }
+            }, 2400); // Após o gif descer, ele começa a se mover aleatoriamente
         }
 
         function moverAleatoriamente() {
             setInterval(() => {
-                if (musica.paused) return;
-                
-                const randomX = Math.random() * 90; // Largura aleatória até 90% da tela
-                const randomY = Math.random() * 90; // Altura aleatória até 90% da tela
-                const randomRotate = (Math.random() - 0.5) * 360; // Aleatório de rotação de -180 a 180 graus
+                // Calcula posições aleatórias dentro dos limites da tela
+                const randomX = Math.random() * 100; // posição X aleatória
+                const randomY = Math.random() * 100; // posição Y aleatória
 
+                // Calcula o tempo de transição aleatório para dar um efeito de deslize suave
+                const duration = Math.random() * 2 + 1; // Duração entre 1 e 3 segundos
+
+                // Aplica a nova posição ao GIF, com a animação de deslize
+                gif.style.transition = `all ${duration}s ease-in-out`;
+
+                // Condicional para eventualmente espelhar o GIF
+                if (Math.random() < 0.3) { // Aproximadamente 30% de chance de espelhar
+                    gif.style.transform = `translate(-50%, -50%) scaleX(-1)`;
+                } else {
+                    gif.style.transform = `translate(-50%, -50%)`; // Normal
+                }
+
+                // Atualiza a posição do GIF
                 gif.style.left = `${randomX}%`;
                 gif.style.top = `${randomY}%`;
-                gif.style.transform = `translate(-50%, -50%) rotate(${randomRotate}deg)`; // Rotaciona e move suavemente
-            }, 1000); // Mover a cada 1 segundo
+            }, 3000); // Mover a cada 3 segundos
         }
 
         function exibirMensagens() {
